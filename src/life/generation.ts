@@ -16,8 +16,8 @@ export function create(height: number, width: number): Generation {
 
 export function randomize(target: Generation): Generation {
   for (let rowIndex = 0; rowIndex < target.length; rowIndex++) {
-    for (let colIndex = 0; colIndex < target[rowIndex].length; colIndex++) {
-      target[rowIndex][colIndex] = random();
+    for (let colIndex = 0; colIndex < target[rowIndex]!.length; colIndex++) {
+      target[rowIndex]![colIndex] = random();
     }
   }
   return target;
