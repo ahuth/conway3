@@ -1,5 +1,5 @@
 import times from 'lodash/times';
-import { State } from './cell';
+import { random, State } from './cell';
 
 export type Generation = State[][];
 
@@ -12,4 +12,13 @@ export function create(height: number, width: number): Generation {
   });
 
   return newKidsOnTheBlock;
+}
+
+export function randomize(target: Generation): Generation {
+  for (let rowIndex = 0; rowIndex < target.length; rowIndex++) {
+    for (let colIndex = 0; colIndex < target[rowIndex].length; colIndex++) {
+      target[rowIndex][colIndex] = random();
+    }
+  }
+  return target;
 }

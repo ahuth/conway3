@@ -1,6 +1,6 @@
-import { create as createGeneration } from '../life/generation';
+import { create as createGeneration, randomize } from '../life/generation';
 
-const generation = createGeneration(3, 3);
+const generation = randomize(createGeneration(3, 3));
 
 export default function App() {
   console.log(generation);
