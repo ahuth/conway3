@@ -24,11 +24,13 @@ export function create<T>(height: number, width: number, initial: T): Generation
  * Return a generation that is the result of running a mapping function for every element in an
  * existing generation.
  */
-export function map<T>(
+export function map<T, K>(
   source: Generation<T>,
-  mapper: (curent: T, generation: Generation<T>, row: number, col: number) => T,
-  target = create<T>(source.length, source[0]!.length, source[0]![0]!),
-): Generation<T> {
+  mapper: (curent: T, generation: Generation<T>, row: number, col: number) => K,
+  // @ts-ignore Each cell value in target will be overriden, so the `null` initial value is fine,
+  // even though that may or may not match the type of the generation being created.
+  target = create<K>(source.length, source[0]!.length, null),
+): Generation<K> {
   for (let rowIndex = 0; rowIndex < target.length; rowIndex++) {
     for (let colIndex = 0; colIndex < target[rowIndex]!.length; colIndex++) {
       const current = source[rowIndex]![colIndex]!;
