@@ -9,11 +9,11 @@ export type Generation<T> = T[][];
 /**
  * Create a single "generation" of a 2-dimensional cellular automata.
  */
-export function create<T>(height: number, width: number, initial: T): Generation<T> {
-  const newKidsOnTheBlock: Generation<T> = [];
+export function create<Cell>(height: number, width: number, initial: Cell): Generation<Cell> {
+  const newKidsOnTheBlock: Generation<Cell> = [];
 
   times(height, () => {
-    const row = (new Array<T>(width)).fill(initial);
+    const row = (new Array<Cell>(width)).fill(initial);
     newKidsOnTheBlock.push(row);
   });
 
@@ -24,13 +24,13 @@ export function create<T>(height: number, width: number, initial: T): Generation
  * Return a generation that is the result of running a mapping function for every element in an
  * existing generation.
  */
-export function map<T, K>(
-  source: Generation<T>,
-  mapper: (curent: T, generation: Generation<T>, row: number, col: number) => K,
-  // @ts-ignore Each cell value in target will be overriden, so the `null` initial value is fine,
+export function map<InputCell, OutputCell>(
+  source: Generation<InputCell>,
+  mapper: (curent: InputCell, generation: Generation<InputCell>, row: number, col: number) => OutputCell,
+  // @ts-ignore Each cell value in `target` will be overriden, so the `null` initial value is fine,
   // even though that may or may not match the type of the generation being created.
-  target = create<K>(source.length, source[0]!.length, null),
-): Generation<K> {
+  target = create<OutputCell>(source.length, source[0]!.length, null),
+): Generation<OutputCell> {
   for (let rowIndex = 0; rowIndex < target.length; rowIndex++) {
     for (let colIndex = 0; colIndex < target[rowIndex]!.length; colIndex++) {
       const current = source[rowIndex]![colIndex]!;
@@ -45,16 +45,16 @@ export function map<T, K>(
   return target;
 }
 
-type ReduceNeighbors<T> = (current: T, upLeft: T, up: T, upRight: T, toLeft: T, toRight: T, downLeft: T, down: T, downRight: T) => T;
+type ReduceNeighbors<Cell> = (current: Cell, upLeft: Cell, up: Cell, upRight: Cell, toLeft: Cell, toRight: Cell, downLeft: Cell, down: Cell, downRight: Cell) => Cell;
 
 /**
  * Convert from one generation to another according to some rules.
  */
-export function from<T>(
-  source: Generation<T>,
-  reduceNeighbors: ReduceNeighbors<T>,
-  target?: Generation<T>,
-): Generation<T> {
+export function from<Cell>(
+  source: Generation<Cell>,
+  reduceNeighbors: ReduceNeighbors<Cell>,
+  target?: Generation<Cell>,
+): Generation<Cell> {
   return map(
     source,
     (current, generation, rowIndex, colIndex) => {
