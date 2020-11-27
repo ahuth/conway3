@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import useFramerate from '../hooks/useFramerate';
 import useToggle from '../hooks/useToggle';
 import { create, from, randomize } from '../life/conway';
@@ -10,11 +10,9 @@ export default function App() {
   const [framerate, setFramerate] = useState(5);
   const [playing, togglePlaying] = useToggle(false);
 
-  const step = useCallback(() => {
+  useFramerate(playing, framerate, () => {
     setCurrent(from);
-  }, []);
-
-  useFramerate(playing, framerate, step);
+  });
 
   return (
     <div>
