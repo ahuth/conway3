@@ -1,8 +1,7 @@
-import { rules } from '../life/conway';
-import { create as createGeneration, from, randomize } from '../life/generation';
+import { create, from, randomize } from '../life/conway';
 
-const generation = randomize(createGeneration(10, 10));
-const nextGeneration = from(generation, rules);
+const generation = randomize(create(10, 10));
+const nextGeneration = from(generation);
 
 export default function App() {
   console.log(generation, nextGeneration);
