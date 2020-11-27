@@ -6,10 +6,12 @@ export enum State {
   alive = 1,
 }
 
+export type Conway = Generation<State>;
+
 /**
  * Create a single "generation" of a Conway's game of life.
  */
-export function create(height: number, width: number): Generation<State> {
+export function create(height: number, width: number): Conway {
   return createGeneration(height, width, State.inert);
 }
 
@@ -18,16 +20,16 @@ export function create(height: number, width: number): Generation<State> {
  * @see https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
  */
 export function from(
-  source: Generation<State>,
-  target?: Generation<State>,
-): Generation<State> {
+  source: Conway,
+  target?: Conway,
+): Conway {
   return fromGeneration(source, reduceNeighbors, target);
 }
 
 /**
  * Randomize the values of a generation.
  */
-export function randomize(target: Generation<State>) {
+export function randomize(target: Conway) {
   return map(
     target,
     () => randomNum(0, 1) >= 0.5 ? State.alive : State.inert,
