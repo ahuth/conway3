@@ -45,16 +45,26 @@ export function map<InputCell, OutputCell>(
   return target;
 }
 
-type ReduceNeighbors<Cell> = (current: Cell, upLeft: Cell, up: Cell, upRight: Cell, toLeft: Cell, toRight: Cell, downLeft: Cell, down: Cell, downRight: Cell) => Cell;
+type ReduceNeighbors<Cell, Output> = (
+  current: Cell,
+  upLeft: Cell,
+  up: Cell,
+  upRight: Cell,
+  toLeft: Cell,
+  toRight: Cell,
+  downLeft: Cell,
+  down: Cell,
+  downRight: Cell,
+) => Output;
 
 /**
  * Convert from one generation to another according to some rules.
  */
-export function from<Cell>(
-  source: Generation<Cell>,
-  reduceNeighbors: ReduceNeighbors<Cell>,
-  target?: Generation<Cell>,
-): Generation<Cell> {
+export function from<InputCell, OutputCell>(
+  source: Generation<InputCell>,
+  reduceNeighbors: ReduceNeighbors<InputCell, OutputCell>,
+  target?: Generation<OutputCell>,
+): Generation<OutputCell> {
   return map(
     source,
     (current, generation, rowIndex, colIndex) => {
