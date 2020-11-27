@@ -1,37 +1,34 @@
 import times from 'lodash/times';
-import { random, State } from './cell';
-import { apply as applyRule, Rule } from './rule';
 import wrap from './wrap';
 
-export type Generation = State[][];
+/**
+ * A single generation of a 2-dimensional cellular automata.
+ */
+export type Generation<T> = T[][];
 
 /**
  * Create a single "generation" of a 2-dimensional cellular automata.
  */
-export function create(height: number, width: number): Generation {
-  const newKidsOnTheBlock: Generation = [];
+export function create<T>(height: number, width: number, initial: T): Generation<T> {
+  const newKidsOnTheBlock: Generation<T> = [];
 
   times(height, () => {
-    const row = (new Array<State>(width)).fill(State.inert);
+    const row = (new Array<T>(width)).fill(initial);
     newKidsOnTheBlock.push(row);
   });
 
   return newKidsOnTheBlock;
 }
 
-export function randomize(target: Generation): Generation {
-  return map(target, random, target);
-}
-
 /**
  * Return a generation that is the result of running a mapping function for every element in an
  * existing generation.
  */
-export function map(
-  source: Generation,
-  mapper: (curent: State, generation: Generation, row: number, col: number) => State,
-  target = create(source.length, source[0]!.length),
-): Generation {
+export function map<T>(
+  source: Generation<T>,
+  mapper: (curent: T, generation: Generation<T>, row: number, col: number) => T,
+  target = create<T>(source.length, source[0]!.length, source[0]![0]!),
+): Generation<T> {
   for (let rowIndex = 0; rowIndex < target.length; rowIndex++) {
     for (let colIndex = 0; colIndex < target[rowIndex]!.length; colIndex++) {
       const current = source[rowIndex]![colIndex]!;
@@ -46,44 +43,43 @@ export function map(
   return target;
 }
 
+type ReduceNeighbors<T> = (current: T, upLeft: T, up: T, upRight: T, toLeft: T, toRight: T, downLeft: T, down: T, downRight: T) => T;
+
 /**
  * Convert from one generation to another according to some rules.
  */
-export function from(
-  source: Generation,
-  rules: Rule[],
-  target?: Generation,
-): Generation {
+export function from<T>(
+  source: Generation<T>,
+  reduceNeighbors: ReduceNeighbors<T>,
+  target?: Generation<T>,
+): Generation<T> {
   return map(
     source,
     (current, generation, rowIndex, colIndex) => {
-      const numNeighbors = countNeighbors(generation, rowIndex, colIndex);
-      return applyRule(rules, current, numNeighbors);
+      const maxRow = generation.length - 1;
+      const maxCol = generation[0]!.length - 1;
+
+      const neighborUpLeft    = generation[wrap(rowIndex - 1, maxRow)]![wrap(colIndex - 1, maxCol)]!;
+      const neighborUp        = generation[wrap(rowIndex - 1, maxRow)]![colIndex]!;
+      const neighborUpRight   = generation[wrap(rowIndex - 1, maxRow)]![wrap(colIndex + 1, maxCol)]!;
+      const neighborToLeft    = generation[rowIndex]![wrap(colIndex - 1, maxCol)]!;
+      const neighborToRight   = generation[rowIndex]![wrap(colIndex + 1, maxCol)]!;
+      const neighborDownLeft  = generation[wrap(rowIndex + 1, maxRow)]![wrap(colIndex - 1, maxCol)]!;
+      const neighborDown      = generation[wrap(rowIndex + 1, maxRow)]![colIndex]!;
+      const neighborDownRight = generation[wrap(rowIndex + 1, maxRow)]![wrap(colIndex + 1, maxCol)]!;
+
+      return reduceNeighbors(
+        current,
+        neighborUpLeft,
+        neighborUp,
+        neighborUpRight,
+        neighborToLeft,
+        neighborToRight,
+        neighborDownLeft,
+        neighborDown,
+        neighborDownRight,
+      );
     },
     target,
   );
-}
-
-function countNeighbors(generation: Generation, rowIndex: number, colIndex: number): number {
-  const maxRow = generation.length - 1;
-  const maxCol = generation[0]!.length - 1;
-
-  // Up and to the left
-  const neighbor1 = generation[wrap(rowIndex - 1, maxRow)]![wrap(colIndex - 1, maxCol)]!;
-  // Straight up
-  const neighbor2 = generation[wrap(rowIndex - 1, maxRow)]![colIndex]!;
-  // Up and to the right
-  const neighbor3 = generation[wrap(rowIndex - 1, maxRow)]![wrap(colIndex + 1, maxCol)]!;
-  // Straight left
-  const neighbor4 = generation[rowIndex]![wrap(colIndex - 1, maxCol)]!;
-  // Straight right
-  const neighbor5 = generation[rowIndex]![wrap(colIndex + 1, maxCol)]!;
-  // Down and to the left
-  const neighbor6 = generation[wrap(rowIndex + 1, maxRow)]![wrap(colIndex - 1, maxCol)]!;
-  // Straight down
-  const neighbor7 = generation[wrap(rowIndex + 1, maxRow)]![colIndex]!;
-  // Down and to the right
-  const neighbor8 = generation[wrap(rowIndex + 1, maxRow)]![wrap(colIndex + 1, maxCol)]!;
-
-  return neighbor1 + neighbor2 + neighbor3 + neighbor4 + neighbor5 + neighbor6 + neighbor7 + neighbor8;
 }
