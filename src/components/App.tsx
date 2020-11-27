@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
+import useFramerate from '../hooks/useFramerate';
 import useToggle from '../hooks/useToggle';
 import { create, from, randomize } from '../life/conway';
 
@@ -8,22 +9,11 @@ export default function App() {
   const [current, setCurrent] = useState(initial);
   const [playing, togglePlaying] = useToggle(false);
 
-  useEffect(() => {
-    if (!playing) {
-      return;
-    }
+  const step = useCallback(() => {
+    setCurrent(from);
+  }, []);
 
-    let id = window.requestAnimationFrame(step);
-
-    function step() {
-      setCurrent(from);
-      id = window.requestAnimationFrame(step);
-    }
-
-    return () => {
-      window.cancelAnimationFrame(id);
-    };
-  }, [playing, setCurrent, togglePlaying]);
+  useFramerate(playing, 2, step);
 
   return (
     <div>
