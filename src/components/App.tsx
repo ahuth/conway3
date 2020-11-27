@@ -3,7 +3,8 @@ import useFramerate from '../hooks/useFramerate';
 import useToggle from '../hooks/useToggle';
 import { create, from, randomize } from '../life/conway';
 
-const initial = randomize(create(100, 100));
+const size = 100;
+const initial = randomize(create(size, size));
 
 export default function App() {
   const [current, setCurrent] = useState(initial);
@@ -32,7 +33,15 @@ export default function App() {
       >
         {playing ? 'Stop' : 'Play'}
       </button>
-      <code>{current}</code>
+      <code style={styles.grid}>{current}</code>
     </div>
   );
 }
+
+const styles = {
+  grid: {
+    display: 'block',
+    maxWidth: `${size}ch`,
+    wordBreak: 'break-word',
+  },
+};
