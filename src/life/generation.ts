@@ -5,6 +5,9 @@ import wrap from './wrap';
 
 export type Generation = State[][];
 
+/**
+ * Create a single "generation" of a 2-dimensional cellular automata.
+ */
 export function create(height: number, width: number): Generation {
   const newKidsOnTheBlock: Generation = [];
 
@@ -20,6 +23,10 @@ export function randomize(target: Generation): Generation {
   return map(target, random, target);
 }
 
+/**
+ * Return a generation that is the result of running a mapping function for every element in an
+ * existing generation.
+ */
 export function map(
   source: Generation,
   mapper: (curent: State, generation: Generation, row: number, col: number) => State,
@@ -39,6 +46,9 @@ export function map(
   return target;
 }
 
+/**
+ * Convert from one generation to another according to some rules.
+ */
 export function from(
   source: Generation,
   rules: Rule[],

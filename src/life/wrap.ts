@@ -1,3 +1,6 @@
+/**
+ * Return a number wrapped around 0 or a max number.
+ */
 export default function wrap(num: number, max: number): number {
   if (num < 0) {
     return max + num + 1;
