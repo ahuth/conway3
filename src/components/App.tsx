@@ -21,7 +21,7 @@ export default function App() {
       <input
         id="framerate-range"
         type="range"
-        min="0"
+        min="1"
         max="60"
         step="1"
         value={framerate}
