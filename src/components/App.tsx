@@ -3,7 +3,7 @@ import useFramerate from '../hooks/useFramerate';
 import useToggle from '../hooks/useToggle';
 import { create, from, randomize } from '../life/conway';
 
-const size = 100;
+const size = 50;
 const initial = randomize(create(size, size));
 
 export default function App() {
