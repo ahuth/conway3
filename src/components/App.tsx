@@ -16,7 +16,7 @@ export default function App() {
   });
 
   return (
-    <div>
+    <div style={styles.app}>
       <label htmlFor="framerate-range">Framerate</label>
       <input
         id="framerate-range"
@@ -45,6 +45,9 @@ export default function App() {
 }
 
 const styles = {
+  app: {
+    margin: '1rem 2rem',
+  },
   grid: {
     display: 'block',
     lineHeight: 0.6,
