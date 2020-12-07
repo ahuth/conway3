@@ -33,7 +33,7 @@ export default function App() {
       >
         {playing ? 'Stop' : 'Play'}
       </button>
-      <code style={styles.grid}>{current}</code>
+      <pre style={styles.grid}>{current}</pre>
     </div>
   );
 }
@@ -42,6 +42,7 @@ const styles = {
   grid: {
     display: 'block',
     maxWidth: `${size}ch`,
+    whiteSpace: 'pre-wrap',
     wordBreak: 'break-word',
   },
 };
