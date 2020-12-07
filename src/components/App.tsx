@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import useFramerate from '../hooks/useFramerate';
 import useToggle from '../hooks/useToggle';
-import { create, from, randomize } from '../life/conway';
+import { create, from, randomize, State } from '../life/conway';
 
 const size = 50;
 const initial = randomize(create(size, size));
@@ -33,7 +33,13 @@ export default function App() {
       >
         {playing ? 'Stop' : 'Play'}
       </button>
-      <pre style={styles.grid}>{current}</pre>
+      <pre style={styles.grid}>
+        {current.map((row) => {
+          return row.map((cell) => {
+            return cell === State.inert ? '·' : '■';
+          });
+        })}
+      </pre>
     </div>
   );
 }
