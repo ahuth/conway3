@@ -41,6 +41,7 @@ export default function App() {
 const styles = {
   grid: {
     display: 'block',
+    lineHeight: 0.6,
     maxWidth: `${size}ch`,
     whiteSpace: 'pre-wrap',
     wordBreak: 'break-word',
