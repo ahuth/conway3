@@ -1,19 +1,19 @@
 import times from 'lodash/times';
-import wrap from './wrap';
+import WrappableArray from '../WrappableArray';
 
 /**
  * A single generation of a 2-dimensional cellular automata.
  */
-export type Generation<T> = T[][];
+export type Generation<T> = WrappableArray<WrappableArray<T>>;
 
 /**
  * Create a single "generation" of a 2-dimensional cellular automata.
  */
 export function create<Cell>(height: number, width: number, initial: Cell): Generation<Cell> {
-  const newKidsOnTheBlock: Generation<Cell> = [];
+  const newKidsOnTheBlock: Generation<Cell> = new WrappableArray();
 
   times(height, () => {
-    const row = (new Array<Cell>(width)).fill(initial);
+    const row = (new WrappableArray<Cell>(width)).fill(initial);
     newKidsOnTheBlock.push(row);
   });
 
@@ -68,17 +68,14 @@ export function from<InputCell, OutputCell>(
   return map(
     source,
     (current, generation, rowIndex, colIndex) => {
-      const maxRow = generation.length - 1;
-      const maxCol = generation[0]!.length - 1;
-
-      const neighborUpLeft    = generation[wrap(rowIndex - 1, maxRow)]![wrap(colIndex - 1, maxCol)]!;
-      const neighborUp        = generation[wrap(rowIndex - 1, maxRow)]![colIndex]!;
-      const neighborUpRight   = generation[wrap(rowIndex - 1, maxRow)]![wrap(colIndex + 1, maxCol)]!;
-      const neighborToLeft    = generation[rowIndex]![wrap(colIndex - 1, maxCol)]!;
-      const neighborToRight   = generation[rowIndex]![wrap(colIndex + 1, maxCol)]!;
-      const neighborDownLeft  = generation[wrap(rowIndex + 1, maxRow)]![wrap(colIndex - 1, maxCol)]!;
-      const neighborDown      = generation[wrap(rowIndex + 1, maxRow)]![colIndex]!;
-      const neighborDownRight = generation[wrap(rowIndex + 1, maxRow)]![wrap(colIndex + 1, maxCol)]!;
+      const neighborUpLeft    = generation.get(rowIndex - 1).get(colIndex - 1);
+      const neighborUp        = generation.get(rowIndex - 1).get(colIndex);
+      const neighborUpRight   = generation.get(rowIndex - 1).get(colIndex + 1);
+      const neighborToLeft    = generation.get(rowIndex).get(colIndex - 1);
+      const neighborToRight   = generation.get(rowIndex).get(colIndex + 1);
+      const neighborDownLeft  = generation.get(rowIndex + 1).get(colIndex - 1);
+      const neighborDown      = generation.get(rowIndex + 1).get(colIndex);
+      const neighborDownRight = generation.get(rowIndex + 1).get(colIndex + 1);
 
       return reduceNeighbors(
         current,
