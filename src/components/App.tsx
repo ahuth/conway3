@@ -51,7 +51,9 @@ const styles = {
   grid: {
     display: 'block',
     lineHeight: 0.6,
-    maxWidth: `${size}ch`,
+    // Add .5 to the width value. Doing so ensures that Chrome and Safari display the same number
+    // of characters per line that Firefox does...
+    maxWidth: `${size}.5ch`,
     whiteSpace: 'pre-wrap',
     wordBreak: 'break-word',
   },
